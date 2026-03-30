@@ -1,1 +1,55 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>GitHub Users 3D Visualization</title>\n    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>\n    <style>\n        body { margin: 0; }\n        canvas { display: block; }\n    </style>\n</head>\n<body>\n<script>\n    const scene = new THREE.Scene();\n    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);\n    const renderer = new THREE.WebGLRenderer();\n    renderer.setSize(window.innerWidth, window.innerHeight);\n    document.body.appendChild(renderer.domElement);\n\n    // Box data representing GitHub users\n    const users = [\n        { name: 'User1', commits: 25, pullRequests: 5 },\n        { name: 'User2', commits: 15, pullRequests: 2 },\n        { name: 'User3', commits: 50, pullRequests: 10 }\n    ];\n\n    users.forEach((user, index) => {\n        const geometry = new THREE.BoxGeometry(user.commits, user.pullRequests, 1);\n        const material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff });\n        const cube = new THREE.Mesh(geometry, material);\n        cube.position.x = index * 5; // Spacing between boxes\n        scene.add(cube);\n    });\n\n    camera.position.z = 20;\n\n    // Camera controls\n    let keyboard = {};\n    document.addEventListener('keydown', (event) => { keyboard[event.code] = true; });\n    document.addEventListener('keyup', (event) => { keyboard[event.code] = false; });\n\n    const animate = function () {\n        requestAnimationFrame(animate);\n        if (keyboard['KeyW']) camera.position.y += 0.1;\n        if (keyboard['KeyS']) camera.position.y -= 0.1;\n        if (keyboard['KeyA']) camera.position.x -= 0.1;\n        if (keyboard['KeyD']) camera.position.x += 0.1;\n        renderer.render(scene, camera);\n    };\n    animate();\n\n    // Handle window resizing\n    window.addEventListener('resize', () => {\n        camera.aspect = window.innerWidth / window.innerHeight;\n        camera.updateProjectionMatrix();\n        renderer.setSize(window.innerWidth, window.innerHeight);\n    });\n</script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Visualization</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Set up scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // Create a 3D object
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshStandardMaterial({ color: 0x0077ff });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        camera.position.z = 5;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
